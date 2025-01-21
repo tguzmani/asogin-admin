@@ -42,7 +42,9 @@ const logout = () => {
             <!-- Page Content -->
             <main class="flex">
                 <SideNavigation />
-                <slot />
+                <div class="p-6">
+                    <slot />
+                </div>
             </main>
         </div>
     </div>
