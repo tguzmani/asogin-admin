@@ -22,11 +22,13 @@ class MemberMembershipFactory extends Factory
         $membership = Membership::all()->random();
         $member_id = Member::all()->random()->id;
 
+        $start_date = $this->faker->dateTimeBetween('-1 year', 'now');
+
         return [
             'membership_id' => $membership->id,
             'member_id' => $member_id,
-            'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'end_date' => $this->faker->optional()->dateTimeBetween('now', '+1 year'),
+            'start_date' => $start_date,
+            'end_date' => $this->faker->optional()->dateTimeBetween($start_date, '+1 month '),
             'price' => $membership->base_price,
         ];
     }
