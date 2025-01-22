@@ -20,14 +20,22 @@ class MembershipFactory extends Factory
         $startDate = $this->faker->dateTimeBetween('-1 year', 'now'); // Random start date within the last year
         $endDate = $this->faker->optional(0.7, null)->dateTimeBetween($startDate, '+1 year'); // 70% chance of having an end date
 
-        $users = Member::pluck('id')->toArray();
+        $memberships = ['basico', 'piscina', 'especial', 'entrenador', 'personalizado'];
+
+        $name = $this->faker->randomElement($memberships);
+
+        $base_price = [
+            'basico' => 20,
+            'piscina' => 30,
+            'especial' => 40,
+            'entrenador' => 50,
+            'personalizado' => 60,
+        ][$name];
 
         return [
-            'member_id' => $this->faker->randomElement($users), // Create or use an existing Member
-            'membership_type' => $this->faker->randomElement(['special', 'basic', 'premium', 'annual', 'monthly']),
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'name' => $name,
+            'description' => $this->faker->text($this->faker->randomElement([10, 20, 30])),
+            'base_price' => $base_price,
         ];
     }
 }

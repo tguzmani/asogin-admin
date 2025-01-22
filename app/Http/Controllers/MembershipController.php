@@ -5,16 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMembershipRequest;
 use App\Http\Requests\UpdateMembershipRequest;
 use App\Models\Membership;
+use Illuminate\Http\Request;
 
 class MembershipController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->input('search');
+
+        $memberships = Membership::query()
+            ->when($search, function ($query, $search) {
+                $query->where('membership_type', 'like', "%{$search}%");
+            })
+            ->get();
+
+        return inertia('Memberships/Index', [
+            'memberships' => $memberships,
+            'filters' => $request->only('search'),
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

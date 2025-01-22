@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Member extends Model
 {
@@ -36,8 +37,8 @@ class Member extends Model
     /**
      * Relationship with Membership model.
      */
-    public function membership()
+    public function memberships(): BelongsToMany
     {
-        return $this->hasOne(Membership::class);
+        return $this->belongsToMany(Membership::class)->withPivot('start_date', 'end_date', 'price');
     }
 }

@@ -1,7 +1,7 @@
 <template>
-    <AppLayout title="Miembros">
+    <AppLayout title="Membresías">
         <div class="flex flex-col gap-10">
-            <h1 class="text-2xl text-white">Miembros</h1>
+            <h1 class="text-2xl text-white">Membresías</h1>
 
             <div class="flex flex-row justify-end w-full">
                 <div class="search-form w-full max-w-sm min-w-[200px]">
@@ -17,35 +17,29 @@
             <table class="table-fixed text-white w-full">
                 <thead class="text-left h-12 bg-slate-700 rounded">
                     <tr class="">
-                        <th class="px-6 py-3 rounded-tl-lg">Nombre</th>
-                        <th class="px-6 py-3">Apellido</th>
-                        <th class="px-6 py-3">Email</th>
-                        <th class="px-6 py-3">Género</th>
-                        <th class="px-6 py-3 rounded-tr-lg">Status</th>
+                        <th class="px-6 py-3 rounded-tl-lg">Descripción</th>
+                        <th class="px-6 py-3">Status</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr
                         class="h-12 hover:bg-slate-700 cursor-pointer odd:bg-slate-900 even:bg-slate-800"
-                        v-for="member in members"
-                        :key="member.id"
+                        v-for="membership in memberships"
+                        :key="membership.id"
                     >
-                        <td class="px-6 py-3">{{ member.first_name }}</td>
-                        <td class="px-6 py-3">{{ member.last_name }}</td>
-                        <td class="px-6 py-3">{{ member.email }}</td>
                         <td class="px-6 py-3">
-                            {{ translateGender(member.gender) }}
+                            {{ membership.membership_type }}
                         </td>
                         <td class="px-6 py-3">
                             <Chip
                                 :bgcolor="
-                                    member.status === 'active'
+                                    membership.status === 'active'
                                         ? 'bg-green-600'
                                         : 'bg-red-600'
                                 "
                                 color="text-white"
-                                >{{ translateStatus(member.status) }}</Chip
+                                >{{ translateStatus(membership.status) }}</Chip
                             >
                         </td>
                     </tr>
@@ -60,10 +54,10 @@ import Chip from "@/Components/Chip.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
-import { Member } from "./Member";
+import { Membership } from "./Membership";
 
 const props = defineProps<{
-    members: Member[];
+    memberships: Membership[];
     filters: {
         search: string;
     };
@@ -73,14 +67,6 @@ const search = ref<string>(props.filters.search || "");
 
 function translateStatus(status) {
     return status === "active" ? "Activo" : "Inactivo";
-}
-
-function translateGender(gender) {
-    return gender === "female"
-        ? "Femenino"
-        : gender === "male"
-        ? "Masculino"
-        : "Otro";
 }
 
 function performSearch() {
