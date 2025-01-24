@@ -28,8 +28,35 @@ class MemberMembershipFactory extends Factory
             'membership_id' => $membership->id,
             'member_id' => $member_id,
             'start_date' => $start_date,
-            'end_date' => $this->faker->optional()->dateTimeBetween($start_date, '+1 month '),
+            'end_date' => (clone $start_date)->modify('+1 month'),
             'price' => $membership->base_price,
         ];
+    }
+
+    public function runningMembership(): static
+    {
+        return $this->state(function () {
+            $membership = Membership::all()->random();
+            $member_id = Member::all()->random()->id;
+
+            $start_date = now()->subDays(rand(0, 30));
+
+            $addFunction = match ($membership->duration_unit) {
+                'day' => 'addDays',
+                'week' => 'addWeeks',
+                'month' => 'addMonths',
+                'year' => 'addYears',
+            };
+
+            $end_date = now()->$addFunction($membership->duration);
+
+            return [
+                'membership_id' => $membership->id,
+                'member_id' => $member_id,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'price' => $membership->base_price,
+            ];
+        });
     }
 }

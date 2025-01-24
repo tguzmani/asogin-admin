@@ -22,7 +22,16 @@ class MemberController extends Controller
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
-            ->get();
+            ->get()
+            ->map(function ($member) {
+                $latestMembershipName = $member->memberships
+                    ->sortByDesc('pivot.start_date')
+                    ->first()
+                    ?->name;
+
+                $member->latest_membership_name = $latestMembershipName;
+                return $member;
+            });
 
         return inertia('Members/Index', [
             'members' => $members,
@@ -35,7 +44,7 @@ class MemberController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Members/Create');
     }
 
     /**
@@ -43,7 +52,9 @@ class MemberController extends Controller
      */
     public function store(StoreMemberRequest $request)
     {
-        //
+        Member::create($request->validated());
+
+        return redirect()->route('members.index')->with('success', 'Miembro creado con éxito.');
     }
 
     /**

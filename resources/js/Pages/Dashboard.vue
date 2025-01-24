@@ -5,8 +5,6 @@ import Welcome from "@/Components/Welcome.vue";
 
 <template>
     <AppLayout title="Dashboard">
-        <div class="p-6">
-            <Welcome />
-        </div>
+        <Welcome />
     </AppLayout>
 </template>

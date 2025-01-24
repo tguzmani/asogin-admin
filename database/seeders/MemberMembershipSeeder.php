@@ -14,5 +14,6 @@ class MemberMembershipSeeder extends Seeder
     public function run(): void
     {
         MemberMembership::factory()->count(30)->create();
+        MemberMembership::factory()->runningMembership()->count(10)->create();
     }
 }

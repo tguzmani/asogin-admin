@@ -18,7 +18,8 @@ class MembershipController extends Controller
 
         $memberships = Membership::query()
             ->when($search, function ($query, $search) {
-                $query->where('membership_type', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             })
             ->get();
 

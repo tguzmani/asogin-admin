@@ -5,4 +5,5 @@ export interface Member {
     email: string;
     status: string;
     gender: string;
+    latest_membership_name?: string;
 }

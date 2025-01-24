@@ -17,8 +17,9 @@
             <table class="table-fixed text-white w-full">
                 <thead class="text-left h-12 bg-slate-700 rounded">
                     <tr class="">
-                        <th class="px-6 py-3 rounded-tl-lg">Descripción</th>
-                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3">Nombre</th>
+                        <th class="px-6 py-3">Descripción</th>
+                        <th class="px-6 py-3">Precio base (USD)</th>
                     </tr>
                 </thead>
 
@@ -29,18 +30,13 @@
                         :key="membership.id"
                     >
                         <td class="px-6 py-3">
-                            {{ membership.membership_type }}
+                            {{ $filters.capitalize(membership.name) }}
                         </td>
                         <td class="px-6 py-3">
-                            <Chip
-                                :bgcolor="
-                                    membership.status === 'active'
-                                        ? 'bg-green-600'
-                                        : 'bg-red-600'
-                                "
-                                color="text-white"
-                                >{{ translateStatus(membership.status) }}</Chip
-                            >
+                            {{ membership.description }}
+                        </td>
+                        <td class="px-6 py-3">
+                            {{ membership.base_price }}
                         </td>
                     </tr>
                 </tbody>
@@ -65,16 +61,12 @@ const props = defineProps<{
 
 const search = ref<string>(props.filters.search || "");
 
-function translateStatus(status) {
-    return status === "active" ? "Activo" : "Inactivo";
-}
-
 function performSearch() {
     if (search.value.trim() === "") {
-        router.get("/members", {}, { preserveState: true });
+        router.get("/memberships", {}, { preserveState: true });
     } else {
         router.get(
-            "/members",
+            "/memberships",
             { search: search.value },
             { preserveState: true }
         );

@@ -23,6 +23,13 @@ createInertiaApp({
 
         const app = createApp({ render: () => h(App, props) });
 
+        app.config.globalProperties.$filters = {
+            capitalize(text) {
+                if (!text) return;
+                return text.charAt(0).toUpperCase() + text.slice(1);
+            },
+        };
+
         app.component("v-icon", OhVueIcon);
         app.use(plugin).use(ZiggyVue).mount(el);
 

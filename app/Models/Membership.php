@@ -11,21 +11,13 @@ class Membership extends Model
     use HasFactory;
 
     protected $fillable = [
-        'member_id',
-        'membership_type', // e.g., basic, premium, annual, etc.
-        'start_date',
-        'end_date',
-        'status', // active/inactive
-    ];
-
-    protected $hidden = [
-        'created_at',
-        'updated_at',
+        'name',
+        'description',
+        'base_price',
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'base_price' => 'decimal:2',
     ];
 
     /**

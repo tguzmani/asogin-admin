@@ -3,8 +3,12 @@
         <div class="flex flex-col gap-10">
             <h1 class="text-2xl text-white">Miembros</h1>
 
-            <div class="flex flex-row justify-end w-full">
-                <div class="search-form w-full max-w-sm min-w-[200px]">
+            <div class="flex flex-row w-full justify-between">
+                <Link href="/members/create"
+                    ><Button start-icon="fa-plus">Crear miembro</Button></Link
+                >
+
+                <div class="search-form min-w-[400px]">
                     <input
                         v-model="search"
                         placeholder="Buscar"
@@ -14,14 +18,16 @@
                 </div>
             </div>
 
-            <table class="table-fixed text-white w-full">
+            <table class="table-auto text-white w-full">
                 <thead class="text-left h-12 bg-slate-700 rounded">
                     <tr class="">
-                        <th class="px-6 py-3 rounded-tl-lg">Nombre</th>
+                        <th class="px-6 py-3">ID</th>
+                        <th class="px-6 py-3">Nombre</th>
                         <th class="px-6 py-3">Apellido</th>
                         <th class="px-6 py-3">Email</th>
                         <th class="px-6 py-3">Género</th>
-                        <th class="px-6 py-3 rounded-tr-lg">Status</th>
+                        <th class="px-6 py-3">Membresía</th>
+                        <th class="px-6 py-3">Status</th>
                     </tr>
                 </thead>
 
@@ -31,11 +37,21 @@
                         v-for="member in members"
                         :key="member.id"
                     >
+                        <td class="px-6 py-3">{{ member.id }}</td>
                         <td class="px-6 py-3">{{ member.first_name }}</td>
                         <td class="px-6 py-3">{{ member.last_name }}</td>
                         <td class="px-6 py-3">{{ member.email }}</td>
                         <td class="px-6 py-3">
                             {{ translateGender(member.gender) }}
+                        </td>
+                        <td class="px-6 py-3">
+                            {{
+                                member.latest_membership_name
+                                    ? $filters.capitalize(
+                                          member.latest_membership_name
+                                      )
+                                    : "--"
+                            }}
                         </td>
                         <td class="px-6 py-3">
                             <Chip
@@ -58,8 +74,9 @@
 <script setup lang="ts">
 import Chip from "@/Components/Chip.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Button from "@/Components/Button.vue";
 import { ref } from "vue";
-import { router } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { Member } from "./Member";
 
 const props = defineProps<{
@@ -98,18 +115,18 @@ function performSearch() {
 
 <style>
 th:first-child {
-    border-top-left-radius: 0.5rem;
+    border-top-left-radius: 0.25rem;
 }
 
 th:last-child {
-    border-top-right-radius: 0.5rem;
+    border-top-right-radius: 0.25rem;
 }
 
 tr:last-child > td:first-child {
-    border-bottom-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.25rem;
 }
 
 tr:last-child > td:last-child {
-    border-bottom-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.25rem;
 }
 </style>

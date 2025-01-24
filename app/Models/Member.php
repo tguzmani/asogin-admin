@@ -18,11 +18,7 @@ class Member extends Model
         'phone',
         'date_of_birth',
         'gender',
-        'emergency_contact_name',
-        'emergency_contact_phone',
         'address',
-        'status', // active/inactive
-        'notes',
     ];
 
     protected $hidden = [
