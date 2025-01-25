@@ -60,11 +60,27 @@ class MemberController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Member $member)
+    public function show($id)
     {
-        //
-    }
+        // Fetch the member by ID
+        $member = Member::with('memberships')->findOrFail($id);
 
+
+        $latestMembership = $member->memberships->sortByDesc('start_date')->first();
+
+        // Append the latest membership to the member object
+        $member->membership = $latestMembership;
+
+        // Return the data to the Vue component via Inertia
+        return inertia('Members/Show', [
+            'member' => $member,
+        ]);
+
+        // Return the data to the Vue component via Inertia
+        return inertia('Members/Show', [
+            'member' => $member,
+        ]);
+    }
     /**
      * Show the form for editing the specified resource.
      */

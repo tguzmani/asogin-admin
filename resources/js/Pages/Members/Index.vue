@@ -28,12 +28,13 @@
                         <th class="px-6 py-3">Género</th>
                         <th class="px-6 py-3">Membresía</th>
                         <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3">Acciones</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr
-                        class="h-12 hover:bg-slate-700 cursor-pointer odd:bg-slate-900 even:bg-slate-800"
+                        class="h-12 cursor-pointer odd:bg-slate-900 even:bg-slate-800"
                         v-for="member in members"
                         :key="member.id"
                     >
@@ -64,6 +65,22 @@
                                 >{{ translateStatus(member.status) }}</Chip
                             >
                         </td>
+                        <td>
+                            <div class="flex flex-row items-center gap-4">
+                                <Link :href="`/members/${member.id}`">
+                                    <IconButton>
+                                        <v-icon name="fa-eye" fill="white" />
+                                    </IconButton>
+                                </Link>
+
+                                <!-- <Link :href="`/members/${member.id}/edit`"> -->
+                                <Link href="#">
+                                    <IconButton>
+                                        <v-icon name="fa-edit" fill="white" />
+                                    </IconButton>
+                                </Link>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -78,6 +95,7 @@ import Button from "@/Components/Button.vue";
 import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { Member } from "./Member";
+import IconButton from "@/Components/IconButton.vue";
 
 const props = defineProps<{
     members: Member[];
