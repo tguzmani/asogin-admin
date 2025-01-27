@@ -4,9 +4,9 @@
             <h1 class="text-2xl text-white">Miembros</h1>
 
             <div class="flex flex-row w-full justify-between">
-                <Link href="/members/create"
-                    ><Button start-icon="fa-plus">Crear miembro</Button></Link
-                >
+                <Link href="/members/create">
+                    <Button start-icon="fa-plus">Crear miembro</Button>
+                </Link>
 
                 <div class="search-form min-w-[400px]">
                     <input
@@ -18,7 +18,16 @@
                 </div>
             </div>
 
-            <DataGrid :columns="columns" :rows="members" />
+            <DataGrid
+                :columns="columns"
+                :rows="members.data"
+                :pagination="true"
+                :totalRows="members.total"
+                :minHeight="500"
+                @update:page="fetchPage"
+                @update:perPage="fetchPerPage"
+                @update:sort="fetchSorted"
+            />
         </div>
     </AppLayout>
 </template>
@@ -26,78 +35,88 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Button from "@/Components/Button.vue";
+import DataGrid from "@/Components/DataGrid.vue";
 import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
-import { Member } from "./Member";
-import DataGrid from "@/Components/DataGrid.vue";
 import StatusRenderValue from "./DataGrid/StatusRenderValue.vue";
 import ActionsRenderValue from "./DataGrid/ActionsRenderValue.vue";
-import filters from "@/filters";
 
 const props = defineProps<{
-    members: Member[];
+    members: {
+        data: any[];
+        total: number;
+    };
     filters: {
         search: string;
+        sortField: string;
+        sortDirection: string;
     };
 }>();
 
-const search = ref<string>(props.filters.search || "");
+const search = ref(props.filters.search || "");
+const sortField = ref(props.filters.sortField || "id");
+const sortDirection = ref(props.filters.sortDirection || "asc");
 
 const columns = [
     { field: "id", headerName: "ID" },
     { field: "first_name", headerName: "Nombre" },
     { field: "last_name", headerName: "Apellido" },
     { field: "email", headerName: "Email" },
-    { field: "gender", headerName: "Género", renderValue: translateGender },
     {
-        field: "latest_membership_name",
-        headerName: "Membresía",
-        renderValue: filters.capitalize,
+        field: "gender",
+        headerName: "Género",
+        renderValue: renderGender,
     },
-    { field: "status", headerName: "Status", renderValue: StatusRenderValue },
+    { field: "status", headerName: "Estado", renderValue: StatusRenderValue },
     {
         field: "actions",
         headerName: "Acciones",
         renderValue: ActionsRenderValue,
-        sortable: false,
     },
 ];
 
-function translateGender(gender) {
-    return gender === "female"
+function renderGender(value) {
+    return value === "female"
         ? "Femenino"
-        : gender === "male"
+        : value === "male"
         ? "Masculino"
         : "Otro";
 }
 
 function performSearch() {
-    if (search.value.trim() === "") {
-        router.get("/members", {}, { preserveState: true });
-    } else {
-        router.get(
-            "/members",
-            { search: search.value },
-            { preserveState: true }
-        );
-    }
+    router.get(
+        "/members",
+        {
+            search: search.value,
+            sortField: sortField.value,
+            sortDirection: sortDirection.value,
+        },
+        { preserveState: true }
+    );
+}
+
+function fetchPage({ page, perPage }) {
+    router.get("/members", { page, perPage }, { preserveState: true });
+}
+
+function fetchPerPage({ perPage }) {
+    router.get(
+        "/members",
+        {
+            perPage,
+            sortField: sortField.value,
+            sortDirection: sortDirection.value,
+            search: search.value,
+        },
+        { preserveState: true }
+    );
+}
+
+function fetchSorted({ field, direction, page, perPage }) {
+    router.get(
+        "/members",
+        { sortField: field, sortDirection: direction, page, perPage },
+        { preserveState: true }
+    );
 }
 </script>
-
-<style>
-th:first-child {
-    border-top-left-radius: 0.25rem;
-}
-
-th:last-child {
-    border-top-right-radius: 0.25rem;
-}
-
-tr:last-child > td:first-child {
-    border-bottom-left-radius: 0.25rem;
-}
-
-tr:last-child > td:last-child {
-    border-bottom-right-radius: 0.25rem;
-}
-</style>

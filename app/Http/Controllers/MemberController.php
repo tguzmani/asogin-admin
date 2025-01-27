@@ -15,6 +15,12 @@ class MemberController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $sortField = $request->input('sortField', 'id');
+        $sortDirection = $request->input('sortDirection', 'asc');
+        $perPage = $request->input('perPage', 10);
+
+        // Ensure sortDirection is either 'asc' or 'desc'
+        $sortDirection = in_array(strtolower($sortDirection), ['asc', 'desc']) ? $sortDirection : 'asc';
 
         $members = Member::query()
             ->when($search, function ($query, $search) {
@@ -22,22 +28,17 @@ class MemberController extends Controller
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
-            ->get()
-            ->map(function ($member) {
-                $latestMembershipName = $member->memberships
-                    ->sortByDesc('pivot.start_date')
-                    ->first()
-                    ?->name;
-
-                $member->latest_membership_name = $latestMembershipName;
-                return $member;
-            });
+            ->orderBy($sortField, $sortDirection) // Apply validated sorting
+            ->paginate($perPage);
 
         return inertia('Members/Index', [
             'members' => $members,
             'filters' => $request->only('search'),
         ]);
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
