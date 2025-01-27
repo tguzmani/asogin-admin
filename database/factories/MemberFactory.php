@@ -23,11 +23,6 @@ class MemberFactory extends Factory
             'phone' => $this->faker->phoneNumber(),
             'date_of_birth' => $this->faker->date('Y-m-d', '-18 years'), // Random date at least 18 years ago
             'gender' => $this->faker->randomElement(['male', 'female']),
-            'emergency_contact_name' => $this->faker->name(),
-            'emergency_contact_phone' => $this->faker->phoneNumber(),
-            'address' => $this->faker->address(),
-            'status' => $this->faker->randomElement(['active', 'inactive']),
-            'notes' => $this->faker->sentence(),
         ];
     }
 }

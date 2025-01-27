@@ -18,84 +18,21 @@
                 </div>
             </div>
 
-            <table class="table-auto text-white w-full">
-                <thead class="text-left h-12 bg-slate-700 rounded">
-                    <tr class="">
-                        <th class="px-6 py-3">ID</th>
-                        <th class="px-6 py-3">Nombre</th>
-                        <th class="px-6 py-3">Apellido</th>
-                        <th class="px-6 py-3">Email</th>
-                        <th class="px-6 py-3">Género</th>
-                        <th class="px-6 py-3">Membresía</th>
-                        <th class="px-6 py-3">Status</th>
-                        <th class="px-6 py-3">Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr
-                        class="h-12 cursor-pointer odd:bg-slate-900 even:bg-slate-800"
-                        v-for="member in members"
-                        :key="member.id"
-                    >
-                        <td class="px-6 py-3">{{ member.id }}</td>
-                        <td class="px-6 py-3">{{ member.first_name }}</td>
-                        <td class="px-6 py-3">{{ member.last_name }}</td>
-                        <td class="px-6 py-3">{{ member.email }}</td>
-                        <td class="px-6 py-3">
-                            {{ translateGender(member.gender) }}
-                        </td>
-                        <td class="px-6 py-3">
-                            {{
-                                member.latest_membership_name
-                                    ? $filters.capitalize(
-                                          member.latest_membership_name
-                                      )
-                                    : "--"
-                            }}
-                        </td>
-                        <td class="px-6 py-3">
-                            <Chip
-                                :bgcolor="
-                                    member.status === 'active'
-                                        ? 'bg-green-600'
-                                        : 'bg-red-600'
-                                "
-                                color="text-white"
-                                >{{ translateStatus(member.status) }}</Chip
-                            >
-                        </td>
-                        <td>
-                            <div class="flex flex-row items-center gap-4">
-                                <Link :href="`/members/${member.id}`">
-                                    <IconButton>
-                                        <v-icon name="fa-eye" fill="white" />
-                                    </IconButton>
-                                </Link>
-
-                                <!-- <Link :href="`/members/${member.id}/edit`"> -->
-                                <Link href="#">
-                                    <IconButton>
-                                        <v-icon name="fa-edit" fill="white" />
-                                    </IconButton>
-                                </Link>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <DataGrid :columns="columns" :rows="members" />
         </div>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
-import Chip from "@/Components/Chip.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Button from "@/Components/Button.vue";
 import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { Member } from "./Member";
-import IconButton from "@/Components/IconButton.vue";
+import DataGrid from "@/Components/DataGrid.vue";
+import StatusRenderValue from "./DataGrid/StatusRenderValue.vue";
+import ActionsRenderValue from "./DataGrid/ActionsRenderValue.vue";
+import filters from "@/filters";
 
 const props = defineProps<{
     members: Member[];
@@ -106,9 +43,25 @@ const props = defineProps<{
 
 const search = ref<string>(props.filters.search || "");
 
-function translateStatus(status) {
-    return status === "active" ? "Activo" : "Inactivo";
-}
+const columns = [
+    { field: "id", headerName: "ID" },
+    { field: "first_name", headerName: "Nombre" },
+    { field: "last_name", headerName: "Apellido" },
+    { field: "email", headerName: "Email" },
+    { field: "gender", headerName: "Género", renderValue: translateGender },
+    {
+        field: "latest_membership_name",
+        headerName: "Membresía",
+        renderValue: filters.capitalize,
+    },
+    { field: "status", headerName: "Status", renderValue: StatusRenderValue },
+    {
+        field: "actions",
+        headerName: "Acciones",
+        renderValue: ActionsRenderValue,
+        sortable: false,
+    },
+];
 
 function translateGender(gender) {
     return gender === "female"

@@ -7,6 +7,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 import * as FaIcons from "oh-vue-icons/icons/fa";
+import filters from "./filters";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -23,12 +24,7 @@ createInertiaApp({
 
         const app = createApp({ render: () => h(App, props) });
 
-        app.config.globalProperties.$filters = {
-            capitalize(text) {
-                if (!text) return;
-                return text.charAt(0).toUpperCase() + text.slice(1);
-            },
-        };
+        app.config.globalProperties.$filters = filters;
 
         app.component("v-icon", OhVueIcon);
         app.use(plugin).use(ZiggyVue).mount(el);

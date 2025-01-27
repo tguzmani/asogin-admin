@@ -16,38 +16,51 @@
                     </div>
                 </div>
 
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="mt-8">
                     <div class="bg-white p-6 rounded-md shadow-md">
                         <h2 class="text-xl font-bold mb-4">
-                            Membership Information
+                            Información de membresía
                         </h2>
-                        <p>
-                            <strong>Plan:</strong>
-                            {{ $filters.capitalize(member.membership.name) }}
-                        </p>
-                        <p>
-                            <strong>Status:</strong>
-                            {{ member.membership_status }}
-                        </p>
-                        <p><strong>Trainer:</strong> {{ member.trainer }}</p>
-                        <p>
-                            <strong>Joining Date:</strong>
-                            {{ member.joining_date }}
-                        </p>
-                        <p>
-                            <strong>Expiry Date:</strong>
-                            {{ member.expiry_date }}
-                        </p>
-                    </div>
 
-                    <div class="bg-white p-6 rounded-md shadow-md">
-                        <h2 class="text-xl font-bold mb-4">
-                            Contact Information
-                        </h2>
-                        <p><strong>City:</strong> {{ member.city }}</p>
-                        <p><strong>State:</strong> {{ member.state }}</p>
-                        <p><strong>Zipcode:</strong> {{ member.zipcode }}</p>
-                        <p><strong>Phone:</strong> {{ member.phone }}</p>
+                        <div class="flex flex-col gap-3">
+                            <div class="grid grid-cols-3 gap-4">
+                                <MemberMembershipItem label="Nombre del plan">
+                                    {{
+                                        $filters.capitalize(
+                                            member.membership.name
+                                        )
+                                    }}
+                                </MemberMembershipItem>
+
+                                <MemberMembershipItem
+                                    label="Descripción del plan"
+                                >
+                                    {{
+                                        $filters.capitalize(
+                                            member.membership.description
+                                        )
+                                    }}
+                                </MemberMembershipItem>
+
+                                <MemberMembershipItem label="Precio contratado">
+                                    USD {{ member.membership.pivot.price }}
+                                </MemberMembershipItem>
+
+                                <MemberMembershipItem label="Fecha de inicio">
+                                    {{ member.membership.pivot.start_date }}
+                                </MemberMembershipItem>
+
+                                <MemberMembershipItem
+                                    label="Fecha de finalización"
+                                >
+                                    {{ member.membership.pivot.end_date }}
+                                </MemberMembershipItem>
+
+                                <MemberMembershipItem label="Status de pago">
+                                    Sin pago
+                                </MemberMembershipItem>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,6 +72,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Page from "@/Layouts/Page.vue";
 import { Member } from "./Member";
+import MemberMembershipItem from "@/Components/Members/MemberMembershipItem.vue";
 
 defineProps<{
     member: any;

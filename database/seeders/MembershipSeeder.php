@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Membership;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Membership;
 
 class MembershipSeeder extends Seeder
 {
@@ -13,6 +12,22 @@ class MembershipSeeder extends Seeder
      */
     public function run(): void
     {
-        Membership::factory()->count(10)->create();
+        $memberships = [
+            'basico' => 20,
+            'full' => 70,
+            'piscina' => 30,
+            'especial' => 40,
+            'entrenador' => 50,
+            'personalizado' => 60,
+        ];
+
+        foreach ($memberships as $name => $base_price) {
+            Membership::create([
+                'name' => $name,
+                'description' => fake()->text(fake()->randomElement([10, 20, 30])),
+                'base_price' => $base_price,
+                'duration' => fake()->randomElement([1, 1, 1, 1, 1, 3, 6]),
+            ]);
+        }
     }
 }
