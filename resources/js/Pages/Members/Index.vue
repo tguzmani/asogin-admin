@@ -5,7 +5,7 @@
         route="/members"
         :columns="columns"
         :entities="members"
-        :filters="filters"
+        :filters="props.filters"
     />
 </template>
 
@@ -15,7 +15,7 @@ import MemberStatusRenderValue from "@/Components/Members/DataGrid/MemberStatusR
 import ActionsRenderValue from "@/Components/Members/DataGrid/ActionsRenderValue.vue";
 import IndexPage from "../Layout/IndexPage.vue";
 
-defineProps<{
+const props = defineProps<{
     members: {
         data: any[];
         total: number;
@@ -23,9 +23,11 @@ defineProps<{
     filters: {
         search: string;
         sortField: string;
-        sortDirection: string;
+        sortDirection: "asc" | "desc";
     };
 }>();
+
+console.log(props.filters);
 
 function renderGender(gender) {
     return gender === "female"

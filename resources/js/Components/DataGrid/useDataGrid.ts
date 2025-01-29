@@ -1,11 +1,25 @@
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
 
-export function useDataGrid(route: string) {
-    const search = ref("");
-    const sortField = ref("id");
-    const sortDirection = ref<"asc" | "desc">("asc");
-    const perPage = ref(10);
+interface DataGridOptions {
+    route: string;
+    initialSearch?: string;
+    initialSortField?: string;
+    initialSortDirection?: "asc" | "desc";
+    initialPerPage?: number;
+}
+
+export function useDataGrid({
+    route,
+    initialSearch = "",
+    initialSortField = "id",
+    initialSortDirection = "asc",
+    initialPerPage = 10,
+}: DataGridOptions) {
+    const search = ref(initialSearch);
+    const sortField = ref(initialSortField);
+    const sortDirection = ref(initialSortDirection);
+    const perPage = ref(initialPerPage);
     const currentPage = ref(1);
 
     function fetchData(params) {
@@ -27,6 +41,9 @@ export function useDataGrid(route: string) {
             sortField: sortField.value,
             sortDirection: sortDirection.value,
         });
+
+        currentPage.value = page;
+        perPage.value = perPage;
     }
 
     function fetchPerPage({ perPage }) {
@@ -36,6 +53,9 @@ export function useDataGrid(route: string) {
             sortDirection: sortDirection.value,
             search: search.value,
         });
+
+        currentPage.value = 1;
+        perPage.value = perPage;
     }
 
     function fetchSorted({ field, direction, page, perPage }) {
@@ -45,6 +65,11 @@ export function useDataGrid(route: string) {
             page,
             perPage,
         });
+
+        sortField.value = field;
+        sortDirection.value = direction;
+        currentPage.value = page;
+        perPage.value = perPage;
     }
 
     return {
