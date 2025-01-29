@@ -17,25 +17,39 @@ class MemberController extends Controller
         $search = $request->input('search');
         $sortField = $request->input('sortField', 'id');
         $sortDirection = $request->input('sortDirection', 'asc');
-        $perPage = $request->input('perPage', 10);
+        $perPage = (int) $request->input('perPage', 10);
 
         // Ensure sortDirection is either 'asc' or 'desc'
         $sortDirection = in_array(strtolower($sortDirection), ['asc', 'desc']) ? $sortDirection : 'asc';
 
-        $members = Member::query()
+        $query = Member::query()
             ->when($search, function ($query, $search) {
                 $query->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
-            ->orderBy($sortField, $sortDirection) // Apply validated sorting
-            ->paginate($perPage);
+            ->orderBy($sortField, $sortDirection);
+
+        // Paginate the results
+        $members = $query->paginate($perPage);
+
+        // Map memberships and add the custom attribute to each member
+        $members->getCollection()->transform(function ($member) {
+            $latestMembershipName = $member->memberships
+                ->sortByDesc('pivot.start_date')
+                ->first()
+                ?->name;
+
+            $member->latest_membership_name = $latestMembershipName;
+            return $member;
+        });
 
         return inertia('Members/Index', [
             'members' => $members,
-            'filters' => $request->only('search'),
+            'filters' => $request->only('search', 'sortField', 'sortDirection', 'perPage'),
         ]);
     }
+
 
 
 

@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Page from "@/Layouts/Page.vue";
-import { Member } from "./Member";
+import { Member } from "../../Types/Member";
 import MemberMembershipItem from "@/Components/Members/MemberMembershipItem.vue";
 
 defineProps<{
